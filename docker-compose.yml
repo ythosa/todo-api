@@ -14,7 +14,7 @@ services:
     command: go run ./cmd/main.go
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8000:8000"
     networks:
       - todo-rest-api
     depends_on:
@@ -22,9 +22,11 @@ services:
 
   api-database:
     container_name: api-database
-    image: postgres:13-alpine
-    env_file:
-      - ./database/postgresql.env
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    env_file: 
+      - ./configs/postgres.env
     volumes:
       - api-database:/var/lib/postgresql/data
     networks:
