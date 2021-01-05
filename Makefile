@@ -2,6 +2,10 @@ SHELL := /bin/bash
 
 migrate_path = ~/Programs/migrate.linux-amd64
 
+.PHONY: up_compose
+up_compose:
+	docker-compose up --build
+
 .PHONY: build
 build:
 	go build -v ./cmd/main.go
@@ -22,4 +26,4 @@ migrate_up:
 migrate_down:
 	$(migrate_path) -path ./schema -database 'postgres://ythosa:qwerty@localhost:5432/todo?sslmode=disable' down
 
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := up_compose

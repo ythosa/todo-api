@@ -32,7 +32,7 @@ func main() {
 		Username: viper.GetString("db.username"),
 		Password: os.Getenv("DB_PASSWORD"),
 		DBName:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("db.sslmoe"),
+		SSLMode:  viper.GetString("db.sslmode"),
 	})
 
 	if err != nil {
