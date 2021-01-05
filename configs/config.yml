@@ -1,1 +1,6 @@
 port: "8000"
+dbhost: "api-database"
+dbport: "5432"
+dbuser: "ythosa"
+dbpass: "qwerty"
+dbname: "todo"

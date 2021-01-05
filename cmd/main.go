@@ -1,12 +1,15 @@
 package main
 
 import (
+	"log"
+
+	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
+
 	"github.com/Inexpediency/todo-rest-api"
 	"github.com/Inexpediency/todo-rest-api/pkg/handler"
 	"github.com/Inexpediency/todo-rest-api/pkg/repository"
 	"github.com/Inexpediency/todo-rest-api/pkg/service"
-	"github.com/spf13/viper"
-	"log"
 )
 
 func main() {
@@ -14,7 +17,19 @@ func main() {
 		log.Fatalf("error occured while initializing config: %s", err)
 	}
 
-	repos := repository.NewRepository()
+	db, err := repository.NewPostgresDB(repository.Config{
+		Host:     viper.GetString("dbhost"),
+		Port:     viper.GetString("dbport"),
+		Username: viper.GetString("dbuser"),
+		Password: viper.GetString("dbpass"),
+		DBName:   viper.GetString("dbname"),
+		SSLMode:  "disable",
+	})
+	if err != nil {
+		log.Fatalf("failed to initalize db: %s", err)
+	}
+
+	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 
