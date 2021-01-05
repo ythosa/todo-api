@@ -32,13 +32,13 @@ func (h *Handler) signIn(c *gin.Context) {
 	var input dto.SignIn
 
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, "Invalid username or password")
 		return
 	}
 
 	token, err := h.services.Authorization.GenerateToken(input)
 	if err != nil {
-		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		newErrorResponse(c, http.StatusUnauthorized, "Invalid username or password")
 		return
 	}
 
