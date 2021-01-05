@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"github.com/Inexpediency/todo-rest-api/pkg/service"
 	"github.com/gin-gonic/gin"
+
+	"github.com/Inexpediency/todo-rest-api/pkg/service"
 )
 
 type Handler struct {
