@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/Inexpediency/todo-rest-api"
+	"github.com/Inexpediency/todo-rest-api/pkg/handler/dto"
 )
 
 func (h *Handler) signUp(c *gin.Context) {
@@ -28,5 +29,20 @@ func (h *Handler) signUp(c *gin.Context) {
 }
 
 func (h *Handler) signIn(c *gin.Context) {
+	var input dto.SignIn
 
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	token, err := h.services.Authorization.GenerateToken(input)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"token": token,
+	})
 }

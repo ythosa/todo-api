@@ -2,11 +2,13 @@ package service
 
 import (
 	"github.com/Inexpediency/todo-rest-api"
+	"github.com/Inexpediency/todo-rest-api/pkg/handler/dto"
 	"github.com/Inexpediency/todo-rest-api/pkg/repository"
 )
 
 type Authorization interface {
 	CreateUser(user todo.User) (int, error)
+	GenerateToken(signInDTO dto.SignIn) (string, error)
 }
 
 type TodoList interface {
