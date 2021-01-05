@@ -1,14 +1,11 @@
 package service
 
 import (
-	"crypto/sha1"
-	"fmt"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/Inexpediency/todo-rest-api"
 	"github.com/Inexpediency/todo-rest-api/pkg/repository"
 )
-
-const salt = "faskfjsfkjasfjio2i10"
 
 type AuthService struct {
 	repo repository.Authorization
@@ -19,14 +16,12 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 }
 
 func (s *AuthService) CreateUser(user todo.User) (int, error) {
-	user.Password = s.generatePasswordHash(user.Password)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return 0, err
+	}
+
+	user.Password = string(hashedPassword)
 
 	return s.repo.CreateUser(user)
-}
-
-func (s *AuthService) generatePasswordHash(password string) string {
-	hash := sha1.New()
-	hash.Write([]byte(password))
-
-	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
