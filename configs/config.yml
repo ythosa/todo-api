@@ -1,6 +1,8 @@
 port: "8000"
-dbhost: "api-database"
-dbport: "5432"
-dbuser: "ythosa"
-dbpass: "qwerty"
-dbname: "todo"
+
+db:
+  host: "api-database"
+  port: "5432"
+  username: "ythosa"
+  dbname: "todo"
+  sslmode: "disable"
