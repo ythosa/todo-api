@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/Inexpediency/todo-rest-api"
-	"github.com/Inexpediency/todo-rest-api/pkg/handler/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/dto"
 )
 
 func (h *Handler) createList(c *gin.Context) {

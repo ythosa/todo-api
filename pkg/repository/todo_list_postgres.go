@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/Inexpediency/todo-rest-api"
-	"github.com/Inexpediency/todo-rest-api/pkg/handler/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/dto"
 )
 
 type TodoListPostgres struct {

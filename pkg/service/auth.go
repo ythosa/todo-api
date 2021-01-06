@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/Inexpediency/todo-rest-api"
-	"github.com/Inexpediency/todo-rest-api/pkg/handler/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/dto"
 	"github.com/Inexpediency/todo-rest-api/pkg/repository"
 )
 
