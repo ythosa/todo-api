@@ -20,7 +20,7 @@ func NewTodoListPostgres(db *sqlx.DB) *TodoListPostgres {
 	return &TodoListPostgres{db: db}
 }
 
-func (r *TodoListPostgres) CreateList(userId int, list todo.List) (int, error) {
+func (r *TodoListPostgres) Create(userId int, list todo.List) (int, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, err
