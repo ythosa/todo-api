@@ -7,14 +7,22 @@ import (
 )
 
 type TodoItemService struct {
-	repo repository.TodoItem
+	repo               repository.TodoItem
+	todoListRepository repository.TodoList
 }
 
-func NewTodoItemService(repo repository.TodoItem) *TodoItemService {
-	return &TodoItemService{repo: repo}
+func NewTodoItemService(
+	repo repository.TodoItem, todoListRepository repository.TodoList,
+) *TodoItemService {
+	return &TodoItemService{repo: repo, todoListRepository: todoListRepository}
 }
 
-func (s *TodoItemService) Create(listId int, item models.TodoItem) (int, error) {
+func (s *TodoItemService) Create(userId, listId int, item models.TodoItem) (int, error) {
+	_, err := s.todoListRepository.GetById(userId, listId)
+	if err != nil {
+		return 0, err // list does not exists or does not belongs to user
+	}
+
 	return s.repo.Create(listId, item)
 }
 

@@ -7,30 +7,37 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/Inexpediency/todo-rest-api/pkg/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
 )
 
 func (h *Handler) createItem(c *gin.Context) {
-	//userId, err := h.getUserId(c)
-	//if err != nil {
-	//	newErrorResponse(c, http.StatusBadRequest, err.Error())
-	//	return
-	//}
-	//
-	//var input models.TodoItem
-	//if err := c.BindJSON(&input); err != nil {
-	//	newErrorResponse(c, http.StatusBadRequest, err.Error())
-	//	return
-	//}
-	//
-	//itemId, err := h.services.TodoItem.Create(userId, input)
-	//if err != nil {
-	//	newErrorResponse(c, http.StatusInternalServerError, err.Error())
-	//	return
-	//}
-	//
-	//c.JSON(http.StatusOK, map[string]interface{}{
-	//	"id": itemId,
-	//})
+	userId, err := h.getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	listId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid list id param")
+		return
+	}
+
+	var input models.TodoItem
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	itemId, err := h.services.TodoItem.Create(userId, listId, input)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": itemId,
+	})
 }
 
 func (h *Handler) getAllItems(c *gin.Context) {
