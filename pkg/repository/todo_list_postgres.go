@@ -83,7 +83,6 @@ func (r *TodoListPostgres) Delete(userId, listId int) error {
 		todoListsTable, usersListsTable,
 	)
 	result, err := r.db.Exec(query, userId, listId)
-
 	if err != nil {
 		return err
 	}
