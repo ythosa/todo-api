@@ -7,8 +7,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/Inexpediency/todo-rest-api"
 	"github.com/Inexpediency/todo-rest-api/pkg/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
 )
 
 type TodoItemPostgres struct {
@@ -19,7 +19,7 @@ func NewTodoItemPostgres(db *sqlx.DB) *TodoItemPostgres {
 	return &TodoItemPostgres{db: db}
 }
 
-func (r *TodoItemPostgres) Create(listId int, item todo.Item) (int, error) {
+func (r *TodoItemPostgres) Create(listId int, item models.TodoItem) (int, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -51,8 +51,8 @@ func (r *TodoItemPostgres) Create(listId int, item todo.Item) (int, error) {
 	return itemId, nil
 }
 
-func (r *TodoItemPostgres) GetAll(userId, listId int) ([]todo.Item, error) {
-	var items []todo.Item
+func (r *TodoItemPostgres) GetAll(userId, listId int) ([]models.TodoItem, error) {
+	var items []models.TodoItem
 
 	query := fmt.Sprintf(
 		`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti 
@@ -69,8 +69,8 @@ func (r *TodoItemPostgres) GetAll(userId, listId int) ([]todo.Item, error) {
 	return items, nil
 }
 
-func (r *TodoItemPostgres) GetById(userId, itemId int) (todo.Item, error) {
-	var item todo.Item
+func (r *TodoItemPostgres) GetById(userId, itemId int) (models.TodoItem, error) {
+	var item models.TodoItem
 
 	query := fmt.Sprintf(
 		`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti 

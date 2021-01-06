@@ -1,4 +1,4 @@
-package todo
+package models
 
 import (
 	"context"

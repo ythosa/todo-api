@@ -5,7 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/Inexpediency/todo-rest-api"
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
 )
 
 type AuthPostgres struct {
@@ -16,7 +16,7 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 	return &AuthPostgres{db: db}
 }
 
-func (r *AuthPostgres) CreateUser(user todo.User) (int, error) {
+func (r *AuthPostgres) CreateUser(user models.User) (int, error) {
 	var id int
 
 	query := fmt.Sprintf(
@@ -31,8 +31,8 @@ func (r *AuthPostgres) CreateUser(user todo.User) (int, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) GetUserByUsername(username string) (todo.User, error) {
-	var user todo.User
+func (r *AuthPostgres) GetUserByUsername(username string) (models.User, error) {
+	var user models.User
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE username=$1", usersTable)
 	err := r.db.Get(&user, query, username)

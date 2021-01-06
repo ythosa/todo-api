@@ -9,8 +9,8 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
-	"github.com/Inexpediency/todo-rest-api"
 	"github.com/Inexpediency/todo-rest-api/pkg/handler"
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
 	"github.com/Inexpediency/todo-rest-api/pkg/repository"
 	"github.com/Inexpediency/todo-rest-api/pkg/service"
 )
@@ -43,7 +43,7 @@ func main() {
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 
-	srv := new(todo.Server)
+	srv := new(models.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
 		logrus.Fatalf("error occured while running the server: %s ", err)
 	}

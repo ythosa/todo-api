@@ -7,8 +7,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/Inexpediency/todo-rest-api"
 	"github.com/Inexpediency/todo-rest-api/pkg/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
 	"github.com/Inexpediency/todo-rest-api/pkg/repository"
 )
 
@@ -30,7 +30,7 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (s *AuthService) CreateUser(user todo.User) (int, error) {
+func (s *AuthService) CreateUser(user models.User) (int, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return 0, err

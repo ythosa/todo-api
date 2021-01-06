@@ -1,7 +1,9 @@
 package dto
 
-import "github.com/Inexpediency/todo-rest-api"
+import (
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
+)
 
 type ListsResponse struct {
-	Data []todo.List `json:"data"`
+	Data []models.TodoList `json:"data"`
 }

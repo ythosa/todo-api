@@ -1,6 +1,6 @@
-package todo
+package models
 
-type List struct {
+type TodoList struct {
 	Id          string `json:"id" db:"id"`
 	Title       string `json:"title" binding:"required" db:"title"`
 	Description string `json:"description" db:"description"`
@@ -12,7 +12,7 @@ type UsersList struct {
 	ListId int `db:"list_id"`
 }
 
-type Item struct {
+type TodoItem struct {
 	Id          string `json:"id" db:"id"`
 	Title       string `json:"title" db:"title"`
 	Description string `json:"description" db:"description"`

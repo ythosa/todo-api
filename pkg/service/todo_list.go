@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/Inexpediency/todo-rest-api"
 	"github.com/Inexpediency/todo-rest-api/pkg/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
 	"github.com/Inexpediency/todo-rest-api/pkg/repository"
 )
 
@@ -14,15 +14,15 @@ func NewTodoListService(repo repository.TodoList) *TodoListService {
 	return &TodoListService{repo: repo}
 }
 
-func (s *TodoListService) Create(userId int, list todo.List) (int, error) {
+func (s *TodoListService) Create(userId int, list models.TodoList) (int, error) {
 	return s.repo.Create(userId, list)
 }
 
-func (s *TodoListService) GetAll(userId int) ([]todo.List, error) {
+func (s *TodoListService) GetAll(userId int) ([]models.TodoList, error) {
 	return s.repo.GetAll(userId)
 }
 
-func (s *TodoListService) GetById(userId, listId int) (todo.List, error) {
+func (s *TodoListService) GetById(userId, listId int) (models.TodoList, error) {
 	return s.repo.GetById(userId, listId)
 }
 

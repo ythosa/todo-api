@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/Inexpediency/todo-rest-api"
 	"github.com/Inexpediency/todo-rest-api/pkg/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
 )
 
 func (h *Handler) createList(c *gin.Context) {
@@ -17,7 +17,7 @@ func (h *Handler) createList(c *gin.Context) {
 		return
 	}
 
-	var input todo.List
+	var input models.TodoList
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

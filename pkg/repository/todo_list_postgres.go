@@ -8,8 +8,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 
-	"github.com/Inexpediency/todo-rest-api"
 	"github.com/Inexpediency/todo-rest-api/pkg/dto"
+	"github.com/Inexpediency/todo-rest-api/pkg/models"
 )
 
 type TodoListPostgres struct {
@@ -20,7 +20,7 @@ func NewTodoListPostgres(db *sqlx.DB) *TodoListPostgres {
 	return &TodoListPostgres{db: db}
 }
 
-func (r *TodoListPostgres) Create(userId int, list todo.List) (int, error) {
+func (r *TodoListPostgres) Create(userId int, list models.TodoList) (int, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
 		return 0, err
@@ -50,8 +50,8 @@ func (r *TodoListPostgres) Create(userId int, list todo.List) (int, error) {
 	return listId, nil
 }
 
-func (r *TodoListPostgres) GetAll(userId int) ([]todo.List, error) {
-	var lists []todo.List
+func (r *TodoListPostgres) GetAll(userId int) ([]models.TodoList, error) {
+	var lists []models.TodoList
 
 	query := fmt.Sprintf(
 		"SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1",
@@ -62,8 +62,8 @@ func (r *TodoListPostgres) GetAll(userId int) ([]todo.List, error) {
 	return lists, err
 }
 
-func (r *TodoListPostgres) GetById(userId, listId int) (todo.List, error) {
-	var list todo.List
+func (r *TodoListPostgres) GetById(userId, listId int) (models.TodoList, error) {
+	var list models.TodoList
 
 	query := fmt.Sprintf(
 		`SELECT tl.id, tl.title, tl.description FROM %s tl 
