@@ -12,7 +12,7 @@ volumes:
 services:
   todo-api:
     build: ./
-    container_name: api-service
+    container_name: todo-api
     command: go run ./cmd/main.go
     restart: unless-stopped
     ports:
@@ -24,7 +24,7 @@ services:
       - todo-cache
 
   todo-db:
-    container_name: api-database
+    container_name: todo-db
     image: postgres:latest
     ports:
       - "5432:5432"
@@ -36,6 +36,7 @@ services:
       - todo
 
   todo-cache:
+    container_name: todo-cache
     image: redis:6.0.9-alpine
     environment:
       - REDIS_REPLICATION_MODE=master

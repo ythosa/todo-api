@@ -14,8 +14,8 @@ const (
 	listsItemsTable = "lists_items"
 )
 
-// Config for db connection
-type Config struct {
+// PostgresConfig for postgres db connection
+type PostgresConfig struct {
 	Host     string
 	Port     string
 	Username string
@@ -25,7 +25,7 @@ type Config struct {
 }
 
 // NewPostgresDB ...
-func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
+func NewPostgresDB(cfg PostgresConfig) (*sqlx.DB, error) {
 	db, err := sqlx.Open(
 		"postgres",
 		fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",

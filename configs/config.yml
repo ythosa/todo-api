@@ -1,8 +1,13 @@
 port: "8000"
 
 db:
-  host: "api-database"
+  host: "todo-db"
   port: "5432"
   username: "ythosa"
   dbname: "todo"
   sslmode: "disable"
+
+cache:
+  address: "todo-cache:6379"
+  password: ""
+  db: 0

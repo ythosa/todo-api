@@ -29,7 +29,13 @@ func main() {
 		logrus.Fatalf("error loading env variables: %s", err)
 	}
 
-	db, err := repository.NewPostgresDB(repository.Config{
+	cache := repository.NewRedisCache(repository.RedisConfig{
+		Address: viper.GetString("cache.address"),
+		Password: viper.GetString("cache.password"),
+		DB: viper.GetInt("cache.db"),
+	})
+
+	db, err := repository.NewPostgresDB(repository.PostgresConfig{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),
@@ -64,6 +70,10 @@ func main() {
 
 	if err := srv.Shutdown(context.Background()); err != nil {
 		logrus.Errorf("error occured on server shutting down: %s", err)
+	}
+
+	if err := cache.Close(); err != nil {
+		logrus.Errorf("error occured on closing cache connection: %s", err)
 	}
 
 	if err := db.Close(); err != nil {

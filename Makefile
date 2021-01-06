@@ -8,7 +8,7 @@ up_compose:
 
 .PHONY: rm_db
 rm_db:
-	docker rm -v container_name
+	docker rm -v todo-db
 
 .PHONY: build
 build:
