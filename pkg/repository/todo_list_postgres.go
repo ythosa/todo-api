@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
@@ -78,7 +79,15 @@ func (r *TodoListPostgres) Delete(userId, listId int) error {
 				WHERE tl.id = ul.list_id AND ul.user_id = $1 AND ul.list_id = $2`,
 		todoListsTable, usersListsTable,
 	)
-	_, err := r.db.Exec(query, userId, listId)
+	result, err := r.db.Exec(query, userId, listId)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	if n, _ := result.RowsAffected(); n == 0 {
+		return errors.New("there is no todo list with such id")
+	}
+
+	return nil
 }
