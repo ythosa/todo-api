@@ -2,18 +2,24 @@ package repository
 
 import (
 	"fmt"
+	"strconv"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/jmoiron/sqlx"
 
 	"github.com/Inexpediency/todo-rest-api/pkg/models"
 )
 
 type AuthPostgres struct {
-	db *sqlx.DB
+	db    *sqlx.DB
+	cache *redis.Client
 }
 
-func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
-	return &AuthPostgres{db: db}
+func NewAuthPostgres(db *sqlx.DB, cache *redis.Client) *AuthPostgres {
+	return &AuthPostgres{
+		db:    db,
+		cache: cache,
+	}
 }
 
 func (r *AuthPostgres) CreateUser(user models.User) (int, error) {
@@ -38,4 +44,8 @@ func (r *AuthPostgres) GetUserByUsername(username string) (models.User, error) {
 	err := r.db.Get(&user, query, username)
 
 	return user, err
+}
+
+func (r *AuthPostgres) SaveRefreshToken(userId int, token string) error {
+	return r.cache.Set(redisCtx, strconv.Itoa(userId), token, redisTTL).Err()
 }

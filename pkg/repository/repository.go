@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/go-redis/redis/v8"
 	"github.com/jmoiron/sqlx"
 
 	"github.com/Inexpediency/todo-rest-api/pkg/dto"
@@ -35,9 +36,9 @@ type Repository struct {
 }
 
 // NewRepository returns new repository
-func NewRepository(db *sqlx.DB) *Repository {
+func NewRepository(db *sqlx.DB, cache *redis.Client) *Repository {
 	return &Repository{
-		Authorization: NewAuthPostgres(db),
+		Authorization: NewAuthPostgres(db, cache),
 		TodoList:      NewTodoListPostgres(db),
 		TodoItem:      NewTodoItemPostgres(db),
 	}

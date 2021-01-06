@@ -48,7 +48,7 @@ func main() {
 		logrus.Fatalf("failed to initalize db: %s", err)
 	}
 
-	repos := repository.NewRepository(db)
+	repos := repository.NewRepository(db, cache)
 	services := service.NewService(repos)
 	handlers := handler.NewHandler(services)
 

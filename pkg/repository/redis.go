@@ -1,6 +1,15 @@
 package repository
 
-import "github.com/go-redis/redis/v8"
+import (
+	"context"
+	"time"
+
+	"github.com/go-redis/redis/v8"
+)
+
+var redisCtx = context.TODO()
+
+const redisTTL = time.Hour * 24 * 31
 
 type RedisConfig struct {
 	Address  string
@@ -10,9 +19,9 @@ type RedisConfig struct {
 
 func NewRedisCache(cfg RedisConfig) *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
-		Addr: cfg.Address,
+		Addr:     cfg.Address,
 		Password: cfg.Password,
-		DB: cfg.DB,
+		DB:       cfg.DB,
 	})
 
 	return rdb
