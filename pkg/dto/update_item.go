@@ -5,7 +5,7 @@ import "errors"
 type UpdateItem struct {
 	Title       *string `json:"title"`
 	Description *string `json:"description"`
-	Done        *string `json:"done"`
+	Done        *bool   `json:"done"`
 }
 
 func (ui *UpdateItem) Validate() error {
