@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -46,13 +47,31 @@ func (h *Handler) getAllLists(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.GetAllListsResponse{
+	c.JSON(http.StatusOK, dto.ListsResponse{
 		Data: lists,
 	})
 }
 
 func (h *Handler) getListById(c *gin.Context) {
+	userId, err := h.getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
+	listId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	list, err := h.services.TodoList.GetById(userId, listId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, list)
 }
 
 func (h *Handler) updateList(c *gin.Context) {
