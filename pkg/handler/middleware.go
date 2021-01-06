@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/Inexpediency/todo-rest-api/pkg/service"
 )
 
 const (
@@ -26,7 +28,7 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 
-	userID, err := h.services.Authorization.ParseToken(headersParts[1])
+	userID, err := h.services.Authorization.ParseToken(headersParts[1], service.ACCESS_TOKEN)
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 	}

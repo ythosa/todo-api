@@ -44,3 +44,18 @@ func (h *Handler) signIn(c *gin.Context) {
 
 	c.JSON(http.StatusOK, tokens)
 }
+
+func (h *Handler) refreshTokens(c *gin.Context) {
+	refreshToken := c.GetHeader("Refresh")
+	if refreshToken == "" {
+		newErrorResponse(c, http.StatusBadRequest, "Refresh token is not provided")
+	}
+
+	tokens, err := h.services.Authorization.RefreshTokens(refreshToken)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, tokens)
+}

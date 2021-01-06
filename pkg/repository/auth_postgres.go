@@ -49,3 +49,7 @@ func (r *AuthPostgres) GetUserByUsername(username string) (models.User, error) {
 func (r *AuthPostgres) SaveRefreshToken(userId int, token string) error {
 	return r.cache.Set(redisCtx, strconv.Itoa(userId), token, redisTTL).Err()
 }
+
+func (r *AuthPostgres) GetRefreshToken(userId int) (string, error) {
+	return r.cache.Get(redisCtx, strconv.Itoa(userId)).Result()
+}

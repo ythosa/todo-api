@@ -8,8 +8,9 @@ import (
 
 type Authorization interface {
 	CreateUser(user models.User) (int, error)
+	ParseToken(token string, tokenType int) (int, error)
 	GenerateTokens(signInDTO dto.SignIn) (dto.Tokens, error)
-	ParseToken(token string) (int, error)
+	RefreshTokens(refreshToken string) (dto.Tokens, error)
 }
 
 type TodoList interface {
