@@ -8,7 +8,7 @@ import (
 
 type Authorization interface {
 	CreateUser(user models.User) (int, error)
-	GenerateToken(signInDTO dto.SignIn) (string, error)
+	GenerateTokens(signInDTO dto.SignIn) (dto.Tokens, error)
 	ParseToken(token string) (int, error)
 }
 

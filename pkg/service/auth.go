@@ -13,8 +13,10 @@ import (
 )
 
 const (
-	tokenTTL   = 12 * time.Hour
-	signingKey = "81hJ!*@#Y&12yN#UI!Yjfklsjdf"
+	accessTokenTTL        = time.Hour * 2
+	refreshTokenTTL       = time.Hour * 24 * 30
+	accessTokenSigningKey = "81hJ!*@#Y&12yN#UI!Yjfklsjdf"
+	refreshTokenSigningKey = "410fj12fjhsdfjksaj(UY^JIJ98adsuJIKDiHA&*"
 )
 
 type tokenClaims struct {
@@ -41,25 +43,49 @@ func (s *AuthService) CreateUser(user models.User) (int, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GenerateToken(signInDto dto.SignIn) (string, error) {
+func (s *AuthService) GenerateTokens(signInDto dto.SignIn) (dto.Tokens, error) {
+	var tokens dto.Tokens
+
 	user, err := s.repo.GetUserByUsername(signInDto.Username)
 	if err != nil {
-		return "", err
+		return tokens, err
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(signInDto.Password)); err != nil {
-		return "", err
+		return tokens, err
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
+	accessTokenRaw := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
+			ExpiresAt: time.Now().Add(accessTokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 		UserId: user.Id,
 	})
+	accessToken, err := accessTokenRaw.SignedString([]byte(accessTokenSigningKey))
+	if err != nil {
+		return tokens, err
+	}
 
-	return token.SignedString([]byte(signingKey))
+	refreshTokenRaw := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(refreshTokenTTL).Unix(),
+			IssuedAt: time.Now().Unix(),
+		},
+		UserId: user.Id,
+	})
+	refreshToken, err := refreshTokenRaw.SignedString([]byte(refreshTokenSigningKey))
+	if err != nil {
+		return tokens, err
+	}
+	if err := s.repo.SaveRefreshToken(user.Id, refreshToken); err != nil {
+		return tokens, err
+	}
+
+	tokens.AccessToken = accessToken
+	tokens.RefreshToken = refreshToken
+
+	return tokens, nil
 }
 
 func (s *AuthService) ParseToken(accessToken string) (int, error) {
@@ -68,7 +94,7 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 			return nil, errors.New("invalid signing method")
 		}
 
-		return []byte(signingKey), nil
+		return []byte(accessTokenSigningKey), nil
 	})
 
 	if err != nil {

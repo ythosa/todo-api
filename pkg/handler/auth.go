@@ -36,13 +36,11 @@ func (h *Handler) signIn(c *gin.Context) {
 		return
 	}
 
-	token, err := h.services.Authorization.GenerateToken(input)
+	tokens, err := h.services.Authorization.GenerateTokens(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, "Invalid username or password")
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"token": token,
-	})
+	c.JSON(http.StatusOK, tokens)
 }
