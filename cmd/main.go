@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -44,8 +47,27 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	srv := new(pkg.Server)
-	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		logrus.Fatalf("error occured while running the server: %s ", err)
+
+	go func() {
+		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			logrus.Fatalf("error occured while running the server: %s ", err)
+		}
+	}()
+
+	logrus.Printf("todo-service has started on port=%d", viper.GetString("port"))
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Print("todo-service is shutting down...")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("error occured on server shutting down: %s", err)
+	}
+
+	if err := db.Close(); err != nil {
+		logrus.Errorf("error occured on closing db connection: %s", err)
 	}
 }
 
