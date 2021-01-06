@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/Inexpediency/todo-rest-api"
+	"github.com/Inexpediency/todo-rest-api/pkg/handler/dto"
 )
 
 func (h *Handler) createList(c *gin.Context) {
@@ -21,7 +22,7 @@ func (h *Handler) createList(c *gin.Context) {
 		return
 	}
 
-	listId, err := h.services.Create(userId, input)
+	listId, err := h.services.TodoList.Create(userId, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -33,7 +34,21 @@ func (h *Handler) createList(c *gin.Context) {
 }
 
 func (h *Handler) getAllLists(c *gin.Context) {
+	userId, err := h.getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
+	lists, err := h.services.TodoList.GetAll(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, dto.GetAllListsResponse{
+		Data: lists,
+	})
 }
 
 func (h *Handler) getListById(c *gin.Context) {
