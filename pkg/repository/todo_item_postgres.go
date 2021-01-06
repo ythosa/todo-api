@@ -50,11 +50,39 @@ func (r *TodoItemPostgres) Create(listId int, item todo.Item) (int, error) {
 }
 
 func (r *TodoItemPostgres) GetAll(userId, listId int) ([]todo.Item, error) {
+	var items []todo.Item
 
+	query := fmt.Sprintf(
+		`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti 
+				INNER JOIN %s li on li.item_id = ti.id
+				INNER JOIN %s ul on ul.list_id = li.list_id 
+				WHERE li.list_id = $1 AND ul.user_id = $2`,
+		todoItemsTable, listsItemsTable, usersListsTable,
+	)
+
+	if err := r.db.Select(&items, query, listId, userId); err != nil {
+		return nil, err
+	}
+
+	return items, nil
 }
 
 func (r *TodoItemPostgres) GetById(userId, itemId int) (todo.Item, error) {
+	var item todo.Item
 
+	query := fmt.Sprintf(
+		`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti 
+				INNER JOIN %s li on li.item_id = ti.id
+				INNER JOIN %s ul on ul.list_id = li.list_id 
+				WHERE ti.id = $1 AND ul.user_id = $2`,
+		todoItemsTable, listsItemsTable, usersListsTable,
+	)
+
+	if err := r.db.Get(&item, query, itemId, userId); err != nil {
+		return item, err
+	}
+
+	return item, nil
 }
 
 func (r *TodoItemPostgres) Delete(userId, itemId int) error {
