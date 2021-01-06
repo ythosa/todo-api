@@ -9,7 +9,7 @@ CREATE TABLE users
 CREATE TABLE todo_lists
 (
     id          serial       not null unique,
-    title       varchar(255) not null,
+    title       varchar(255) not null unique,
     description varchar(255)
 );
 
@@ -23,7 +23,7 @@ CREATE TABLE users_lists
 CREATE TABLE todo_items
 (
     id          serial       not null unique,
-    title       varchar(255) not null,
+    title       varchar(255) not null unique,
     description varchar(255),
     done        boolean      not null default false
 );

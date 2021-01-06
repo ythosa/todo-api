@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -12,7 +13,7 @@ const (
 	userCtx = "userID"
 )
 
-func (h *Handler) UserIdentity(c *gin.Context) {
+func (h *Handler) userIdentity(c *gin.Context) {
 	header := c.GetHeader(authorizationHeader)
 	if header == "" {
 		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
@@ -31,4 +32,18 @@ func (h *Handler) UserIdentity(c *gin.Context) {
 	}
 
 	c.Set(userCtx, userID)
+}
+
+func (h *Handler) getUserId(c *gin.Context) (int, error) {
+	id, ok := c.Get(userCtx)
+	if !ok {
+		return 0, errors.New("invalid user id")
+	}
+
+	userId, ok := id.(int)
+	if !ok {
+		return 0, errors.New("user id is of invalid type")
+	}
+
+	return userId, nil
 }
