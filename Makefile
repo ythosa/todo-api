@@ -6,6 +6,10 @@ migrate_path = ~/Programs/migrate.linux-amd64
 up_compose:
 	docker-compose up --build
 
+.PHONY: rm_db
+rm_db:
+	docker rm -v container_name
+
 .PHONY: build
 build:
 	go build -v ./cmd/main.go
