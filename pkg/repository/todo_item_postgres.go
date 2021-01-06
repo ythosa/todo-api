@@ -26,19 +26,20 @@ func (r *TodoItemPostgres) Create(listId int, item models.TodoItem) (int, error)
 	}
 
 	var itemId int
-
 	createItemQuery := fmt.Sprintf(
-		"INSERT INTO %s (title, description) VALUES ($1, $2) RETURNING id",
+		"INSERT INTO %s (title, description) values ($1, $2) RETURNING id",
 		todoItemsTable,
 	)
+
 	row := tx.QueryRow(createItemQuery, item.Title, item.Description)
 	if err := row.Scan(&itemId); err != nil {
 		tx.Rollback()
 		return 0, err
 	}
 
-	createListItemRelationQuery := fmt.Sprintf("INSERT INTO %s (list_id, item_id) VALUES ($1, $2)")
-	if _, err := r.db.Exec(createListItemRelationQuery, listId, itemId); err != nil {
+	createListItemsQuery := fmt.Sprintf("INSERT INTO %s (list_id, item_id) values ($1, $2)", listsItemsTable)
+	_, err = tx.Exec(createListItemsQuery, listId, itemId)
+	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
@@ -90,7 +91,7 @@ func (r *TodoItemPostgres) GetById(userId, itemId int) (models.TodoItem, error) 
 func (r *TodoItemPostgres) Delete(userId, itemId int) error {
 	query := fmt.Sprintf(
 		`DELETE FROM %s ti USING %s li, %s ul 
-				WHERE ti.id = li.item_id AND li.id = ul.list_id AND ul.user_id = $1 AND ti.id = $2`,
+				WHERE ti.id = li.item_id AND li.list_id = ul.list_id AND ul.user_id = $1 AND ti.id = $2`,
 		todoItemsTable, listsItemsTable, usersListsTable,
 	)
 
