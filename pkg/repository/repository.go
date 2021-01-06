@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	"github.com/Inexpediency/todo-rest-api"
+	"github.com/Inexpediency/todo-rest-api/pkg/handler/dto"
 )
 
 type Authorization interface {
@@ -16,6 +17,7 @@ type TodoList interface {
 	GetAll(userId int) ([]todo.List, error)
 	GetById(userId, listId int) (todo.List, error)
 	Delete(userId, listId int) error
+	Update(userId, listId int, input dto.UpdateList) error
 }
 
 type TodoItem interface {

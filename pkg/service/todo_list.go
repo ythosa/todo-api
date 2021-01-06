@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/Inexpediency/todo-rest-api"
+	"github.com/Inexpediency/todo-rest-api/pkg/handler/dto"
 	"github.com/Inexpediency/todo-rest-api/pkg/repository"
 )
 
@@ -27,4 +28,12 @@ func (s *TodoListService) GetById(userId, listId int) (todo.List, error) {
 
 func (s *TodoListService) Delete(userId, listId int) error {
 	return s.repo.Delete(userId, listId)
+}
+
+func (s *TodoListService) Update(userId, listId int, input dto.UpdateList) error {
+	if err := input.Validate(); err != nil {
+		return err
+	}
+
+	return s.repo.Update(userId, listId, input)
 }
