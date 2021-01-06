@@ -1,14 +1,16 @@
 version: "3.3"
 
 networks:
-  todo-rest-api:
+  todo:
     driver: bridge
 
 volumes:
-  api-database:
+  todo-db:
+  todo-cache-cfg:
+  todo-cache:
 
 services:
-  api-service:
+  todo-api:
     build: ./
     container_name: api-service
     command: go run ./cmd/main.go
@@ -16,11 +18,12 @@ services:
     ports:
       - "8000:8000"
     networks:
-      - todo-rest-api
+      - todo
     depends_on:
-      - api-database
+      - todo-db
+      - todo-cache
 
-  api-database:
+  todo-db:
     container_name: api-database
     image: postgres:latest
     ports:
@@ -28,6 +31,16 @@ services:
     env_file:
       - ./configs/postgres.env
     volumes:
-      - api-database:/var/lib/postgresql/data
+      - todo-db:/var/lib/postgresql/data
     networks:
-      - todo-rest-api
+      - todo
+
+  todo-cache:
+    image: redis:6.0.9-alpine
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    volumes:
+      - todo-cache:/var/lib/redis
+      - todo-cache-cfg:/usr/local/etc/redis/redis.conf
+    networks:
+      - todo
